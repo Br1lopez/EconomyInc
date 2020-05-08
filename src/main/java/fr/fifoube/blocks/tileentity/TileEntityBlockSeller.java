@@ -23,8 +23,8 @@ import net.minecraftforge.items.ItemStackHandler;
 public class TileEntityBlockSeller extends TileEntity implements INamedContainerProvider {
 
 	private static final TranslationTextComponent NAME = new TranslationTextComponent("container.seller");
-	ItemStackHandler inventory_seller = new ItemStackHandler(1); //STACK HANDLER FOR ONE SLOT = 0 
-	private String owner = ""; 
+	ItemStackHandler inventory_seller = new ItemStackHandler(1); //STACK HANDLER FOR ONE SLOT = 0
+	private String owner = "";
 	private String ownerName = "";
 	private double funds_total;
 	private double cost;
@@ -34,22 +34,22 @@ public class TileEntityBlockSeller extends TileEntity implements INamedContainer
 	private boolean admin;
 	private String facing = "";
     private ITextComponent customName;
-	
+
 	public TileEntityBlockSeller()
 	{
 		this(TileEntityRegistery.TILE_SELLER);
 	}
-	
+
 	public TileEntityBlockSeller(TileEntityType<?> tileEntityTypeIn) {
 		super(tileEntityTypeIn);
 	}
-	
+
 	public ItemStackHandler getHandler()
 	{
-		return inventory_seller;	
+		return inventory_seller;
 	}
-	
-		
+
+
 	  public SUpdateTileEntityPacket getUpdatePacket()
 	    {
 	        return new SUpdateTileEntityPacket(this.pos, 1, this.getUpdateTag());
@@ -59,29 +59,29 @@ public class TileEntityBlockSeller extends TileEntity implements INamedContainer
 	    {
 	        return this.write(new CompoundNBT());
 	    }
-	    
+
 	    @Override
-	    public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) 
+	    public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt)
 	    {
 	    	read(pkt.getNbtCompound());
 	    }
-	    
+
 
 		public ItemStack getStackInSlot(int slot)
 		{
 			return inventory_seller.getStackInSlot(slot);
 		}
-		
+
 		public ItemStack removeStackInSlot(int slot)
 		{
 			return inventory_seller.getStackInSlot(slot).split(1);
 		}
-		
+
 		public void setFacing(String face)
 		{
 			this.facing = face;
 		}
-		
+
 		public String getFacing()
 		{
 			return this.facing;
@@ -91,47 +91,52 @@ public class TileEntityBlockSeller extends TileEntity implements INamedContainer
 		{
 			this.admin = adminS;
 		}
-		
+
 		public boolean getAdmin()
 		{
 			return this.admin;
 		}
-		
+
 	    public void setOwner(String string)
 	    {
 	        this.owner = string;
 	    }
-	    
+
 	    public String getOwner()
 	    {
 	        return this.owner;
 	    }
-	    
+
 	    public void setOwnerName(String stringName)
 	    {
 	    	this.ownerName = stringName;
 	    }
-	    
+
 	    public String getOwnerName()
 	    {
 	    	return this.ownerName;
 	    }
-	    
+
 	    public void setCost(double costS)
 	    {
 	    	this.cost = costS;
 	    }
-	    
+
+			public void addCost(double costS)
+	    {
+	    	this.cost += costS;
+	    }
+
 	    public double getCost()
 	    {
 	        return this.cost;
 	    }
-	    
+
 	    public void setFundsTotal(double fundsS)
 	    {
 	    	this.funds_total = fundsS;
 	    }
-	    
+
 	    public double getFundsTotal()
 	    {
 	    	return this.funds_total;
@@ -140,34 +145,34 @@ public class TileEntityBlockSeller extends TileEntity implements INamedContainer
 	    {
 	    	this.created = createdS;
 	    }
-	    
+
 	    public boolean getCreated()
 	    {
 	        return this.created;
 	    }
-	    
+
 	    public void setItem(String itemS)
 	    {
 	    	this.item = itemS;
 	    }
-	    
+
 	    public String getItem()
 	    {
 	    	return this.inventory_seller.getStackInSlot(0).getDisplayName().getFormattedText().toString();
 	    }
-	    
+
 	    public void setAmount(int amountS)
 	    {
 	    	this.amount = amountS;
 	    }
-	    
+
 	    public int getAmount()
 	    {
 	    	return this.inventory_seller.getStackInSlot(0).getCount();
 	    }
-	   
+
 		@Override
-		public CompoundNBT write(CompoundNBT compound) 
+		public CompoundNBT write(CompoundNBT compound)
 		{
 			compound.put("inventory", inventory_seller.serializeNBT());
 			compound.putString("ownerS", this.owner);
@@ -184,10 +189,10 @@ public class TileEntityBlockSeller extends TileEntity implements INamedContainer
 	        }
 			return super.write(compound);
 		}
-		
-		
+
+
 		@Override
-		public void read(CompoundNBT compound) 
+		public void read(CompoundNBT compound)
 		{
 			super.read(compound);
 			inventory_seller.deserializeNBT(compound.getCompound("inventory"));
@@ -203,25 +208,25 @@ public class TileEntityBlockSeller extends TileEntity implements INamedContainer
 	        if (compound.contains("CustomName", Constants.NBT.TAG_STRING)) {
 	            this.customName = ITextComponent.Serializer.fromJson(compound.getString("CustomName"));
 	        }
-		}	
-		
+		}
+
 		 @Override
-		 public void markDirty() 
+		 public void markDirty()
 		 {
 			BlockState state = this.world.getBlockState(getPos());
-			this.world.notifyBlockUpdate(getPos(), state, state, 3); 
+			this.world.notifyBlockUpdate(getPos(), state, state, 3);
 		 }
 
 		 @Override
 		public Container createMenu(int id, PlayerInventory inventoryPlayer, PlayerEntity playerEntity) {
 			return new ContainerSeller(id, inventoryPlayer, getPos());
 		}
-		 
+
 		@Override
 		public ITextComponent getDisplayName() {
 			return NAME;
 		}
-		
+
 
 
 }
